@@ -2,6 +2,7 @@ from flask import Flask
 from flask_apscheduler import APScheduler
 from scraper import Scraper
 from pymongo_db import PyMongo_DB
+import csv
 
 
 class Config:
@@ -14,12 +15,17 @@ app.config.from_object(Config())
 scheduler = APScheduler()
 
 
-@scheduler.task('interval', id='do_job_1', seconds=30, misfire_grace_time=900)
+# Schedule a scraper to save internship listing data in csv format
+@scheduler.task('interval', id='scrape_listings', hours=3, 
+                misfire_grace_time=900)
 def seed_db():
     s = Scraper()
-    internships = s.seed_applications()
-    p = PyMongo_DB()
-    p.insert_docs(internships[8:])
+    data = s.seed_applications()[8:]
+    with open("data.csv", "w") as csv_file:
+        csv_writer = csv.writer(csv_file)
+
+        for row in data:
+            csv_writer.writerow([row[0], row[1], row[3], row[2], row[4]])
 
 
 scheduler.start()
@@ -27,9 +33,11 @@ scheduler.start()
 
 @app.route('/api', methods=['GET'])
 def index():
-    return {
-        "hi": "bye"
-    }
+    data = []
+    with open("data.csv", "r") as csv_file:
+        csv_reader = csv.reader(csv_file)
+        data.append(list(csv_reader))
+    return data
 
 
 if __name__ == '__main__':
