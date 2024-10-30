@@ -1,7 +1,8 @@
 from flask import Flask
+from flask_cors import CORS, cross_origin
+from flask.helpers import send_from_directory
 from flask_apscheduler import APScheduler
 from scraper import Scraper
-from pymongo_db import PyMongo_DB
 import csv
 
 
@@ -9,7 +10,7 @@ class Config:
     SCHEDULER_API_ENABLED = True
 
 
-app = Flask(__name__)
+app = Flask(__name__, static_folder='frontend', static_url_path='')
 app.config.from_object(Config())
 
 scheduler = APScheduler()
@@ -30,14 +31,23 @@ def seed_db():
 
 scheduler.start()
 
+CORS(app)
+
 
 @app.route('/api', methods=['GET'])
+@cross_origin()
 def index():
     data = []
     with open("data.csv", "r") as csv_file:
         csv_reader = csv.reader(csv_file)
         data.append(list(csv_reader))
     return data
+
+
+@app.route('/')
+@cross_origin()
+def serve():
+    return send_from_directory(app.static_folder, 'index.html')
 
 
 if __name__ == '__main__':
