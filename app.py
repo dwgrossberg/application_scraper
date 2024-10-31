@@ -1,4 +1,4 @@
-from flask import Flask
+from flask import Flask, jsonify
 from flask_cors import CORS, cross_origin
 from flask.helpers import send_from_directory
 from flask_apscheduler import APScheduler
@@ -34,14 +34,14 @@ scheduler.start()
 CORS(app)
 
 
-@app.route('/api', methods=['GET'])
+@app.route('/internships', methods=['GET'])
 @cross_origin()
 def index():
     data = []
     with open("data.csv", "r") as csv_file:
         csv_reader = csv.reader(csv_file)
         data.append(list(csv_reader))
-    return data
+    return jsonify(data)
 
 
 @app.route('/')
