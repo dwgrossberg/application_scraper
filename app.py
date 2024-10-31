@@ -1,9 +1,11 @@
-from flask import Flask, jsonify
+from flask import Flask
 from flask_cors import CORS, cross_origin
 from flask.helpers import send_from_directory
 from flask_apscheduler import APScheduler
 from scraper import Scraper
 import csv
+import uuid
+import json
 
 
 class Config:
@@ -17,7 +19,7 @@ scheduler = APScheduler()
 
 
 # Schedule a scraper to save internship listing data in csv format
-@scheduler.task('interval', id='scrape_listings', hours=3, 
+@scheduler.task('interval', id='scrape_listings', hours=3,
                 misfire_grace_time=900)
 def seed_db():
     s = Scraper()
@@ -26,7 +28,8 @@ def seed_db():
         csv_writer = csv.writer(csv_file)
 
         for row in data:
-            csv_writer.writerow([row[0], row[1], row[3], row[2], row[4]])
+            csv_writer.writerow([uuid.uuid4(), row[0], row[1],
+                                 row[3], row[2], row[4]])
 
 
 scheduler.start()
@@ -41,7 +44,7 @@ def index():
     with open("data.csv", "r") as csv_file:
         csv_reader = csv.reader(csv_file)
         data.append(list(csv_reader))
-    return jsonify(data)
+    return json.dumps(data)
 
 
 @app.route('/')
