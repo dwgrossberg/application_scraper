@@ -4,6 +4,7 @@ from flask.helpers import send_from_directory
 from flask_apscheduler import APScheduler
 from scraper import Scraper
 import csv
+import uuid
 
 
 class Config:
@@ -17,14 +18,14 @@ scheduler = APScheduler()
 
 
 # Schedule a scraper to save internship listing data in csv format
-@scheduler.task('interval', id='scrape_listings', minutes=60,
+@scheduler.task('interval', id='scrape_listings', seconds=60,
                 misfire_grace_time=900)
 def seed_db():
     s = Scraper()
     data = s.seed_applications()[8:]
     with open("data.csv", "w") as csv_file:
         csv_writer = csv.writer(csv_file)
-
+        csv_writer.writerow([uuid.uuid4()])
         for row in data:
             csv_writer.writerow([row[0], row[1], row[3], row[2], row[4]])
 
