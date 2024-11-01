@@ -18,7 +18,7 @@ scheduler = APScheduler()
 
 
 # Schedule a scraper to save internship listing data in csv format
-@scheduler.task('interval', id='scrape_listings', minutes=90,
+@scheduler.task('interval', id='scrape_listings', seconds=60,
                 misfire_grace_time=900)
 def seed_db():
     s = Scraper()
