@@ -56,7 +56,7 @@ class Scraper:
                     # Append application links
                     data.append(row_list)
             if item == self.sites[0]:
-                data_list.append(data[8:])
+                data_list.extend(data[8:])
             else:
-                data_list.append(data[7:])
+                data_list.extend(data[7:])
         return data_list
