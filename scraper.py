@@ -10,6 +10,7 @@ class Scraper:
     def seed_applications(self):
         data_list = []
         for item in self.sites:
+            data = []
             response = requests.get(item)
             soup = BeautifulSoup(response.text, 'lxml')
 
@@ -53,5 +54,9 @@ class Scraper:
                                     find_next('td').find_next('td').
                                     find_next('td').text.strip())
                     # Append application links
-                    data_list.append(row_list)
+                    data.append(row_list)
+            if item == self.sites[0]:
+                data_list.append(data[8:])
+            else:
+                data_list.append(data[7:])
         return data_list
