@@ -54,5 +54,4 @@ class Scraper:
                                     find_next('td').text.strip())
                     # Append application links
                     data_list.append(row_list)
-            print(data_list)
             return data_list
