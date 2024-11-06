@@ -8,10 +8,10 @@ class Scraper:
                       'https://github.com/cvrve/Summer2025-Internships']
 
     def seed_applications(self):
+        data_list = []
         for item in self.sites:
             response = requests.get(item)
             soup = BeautifulSoup(response.text, 'lxml')
-            data_list = []
 
             prevCompany = ''
             for row in soup.find_all('tr'):
@@ -54,4 +54,4 @@ class Scraper:
                                     find_next('td').text.strip())
                     # Append application links
                     data_list.append(row_list)
-            return data_list
+        return data_list
