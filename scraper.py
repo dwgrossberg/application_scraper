@@ -4,7 +4,8 @@ from bs4 import BeautifulSoup
 
 class Scraper:
     def __init__(self):
-        self.sites = ['https://github.com/SimplifyJobs/Summer2025-Internships']
+        self.sites = ['https://github.com/SimplifyJobs/Summer2025-Internships',
+                      'https://github.com/cvrve/Summer2025-Internships']
 
     def seed_applications(self):
         for item in self.sites:
@@ -53,4 +54,10 @@ class Scraper:
                                     find_next('td').text.strip())
                     # Append application links
                     data_list.append(row_list)
+            print(data_list)
             return data_list
+
+
+if __name__ == '__main__':
+    s = Scraper()
+    s.seed_applications()
