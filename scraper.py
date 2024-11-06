@@ -56,8 +56,3 @@ class Scraper:
                     data_list.append(row_list)
             print(data_list)
             return data_list
-
-
-if __name__ == '__main__':
-    s = Scraper()
-    s.seed_applications()
