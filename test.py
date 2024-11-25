@@ -3,7 +3,7 @@ import json
 
 
 def test():
-    url = 'https://location-splitter-6a8b6f1a4160.herokuapp.com/splitter'
+    url = 'http://127.0.0.1:5000/splitter'
     with open('data.json') as f:
         data = json.load(f)
     res = requests.post(url, json=data)

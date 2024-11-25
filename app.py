@@ -1,4 +1,4 @@
-from flask import Flask, jsonify, request
+from flask import Flask
 from flask_cors import CORS, cross_origin
 from flask.helpers import send_from_directory
 from flask_apscheduler import APScheduler
