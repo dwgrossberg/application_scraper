@@ -2,6 +2,7 @@ from flask import Flask, jsonify, request
 from flask_cors import CORS, cross_origin
 from flask.helpers import send_from_directory
 from flask_apscheduler import APScheduler
+import requests
 from scraper import Scraper
 import json
 
@@ -37,10 +38,10 @@ def index():
     url = 'https://location-splitter-6a8b6f1a4160.herokuapp.com/splitter'
     with open('data.json') as f:
         data = json.load(f)
-    res = request.post(url, json=data)
+    res = requests.post(url, json=data)
     with open("data.json", "w") as json_file:
         json.dump(res.json(), json_file, indent=4)
-    return jsonify(res.json())
+    return res.json()
 
 
 @app.route('/')
