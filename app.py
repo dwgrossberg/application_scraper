@@ -5,7 +5,7 @@ from flask_apscheduler import APScheduler
 from scraper import Scraper
 import csv
 import uuid
-
+import requests
 
 class Config:
     SCHEDULER_API_ENABLED = True
@@ -42,7 +42,9 @@ def index():
     with open("data.csv", "r") as csv_file:
         csv_reader = csv.reader(csv_file)
         data.append(list(csv_reader))
-    return jsonify(data)
+    url = 'https://location-splitter-6a8b6f1a4160.herokuapp.com/splitter'
+    res = requests.post(url, json=data)
+    return jsonify(res.json())
 
 
 @app.route('/')
