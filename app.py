@@ -1,11 +1,10 @@
-from flask import Flask, jsonify
+from flask import Flask, jsonify, request
 from flask_cors import CORS, cross_origin
 from flask.helpers import send_from_directory
 from flask_apscheduler import APScheduler
 from scraper import Scraper
-import csv
-import uuid
-import requests
+import json
+
 
 class Config:
     SCHEDULER_API_ENABLED = True
@@ -23,11 +22,8 @@ scheduler = APScheduler()
 def seed_db():
     s = Scraper()
     data = s.seed_applications()[8:]
-    with open("data.csv", "w") as csv_file:
-        csv_writer = csv.writer(csv_file)
-        csv_writer.writerow([uuid.uuid4()])
-        for row in data:
-            csv_writer.writerow([row[0], row[1], row[3], row[2], row[4]])
+    with open("data.json", "w") as json_file:
+        json.dump(data, json_file, indent=4)
 
 
 scheduler.start()
@@ -38,12 +34,12 @@ CORS(app)
 @app.route('/internships', methods=['GET'])
 @cross_origin()
 def index():
-    data = []
-    with open("data.csv", "r") as csv_file:
-        csv_reader = csv.reader(csv_file)
-        data.append(list(csv_reader))
     url = 'https://location-splitter-6a8b6f1a4160.herokuapp.com/splitter'
-    res = requests.post(url, json=data)
+    with open('data.json') as f:
+        data = json.load(f)
+    res = request.post(url, json=data)
+    with open("data.json", "w") as json_file:
+        json.dump(res.json(), json_file, indent=4)
     return jsonify(res.json())
 
 

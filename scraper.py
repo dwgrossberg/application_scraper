@@ -35,9 +35,6 @@ class Scraper:
                     while '🇺🇸' in position:
                         position = position[:-2]
                     row_list.append(position)
-                    # Append location(s) name as a list
-                    row_list.append(row.find('td').find_next('td').
-                                    find_next('td').text.strip())
                     # Append application links - get the application source
                     link = (row.find('td').find_next('td').find_next('td').
                             find_next('td'))
@@ -49,6 +46,9 @@ class Scraper:
                             row_list.append(app_link['href'])
                         else:
                             row_list.append('Application Closed')
+                    # Append location(s) name as a list
+                    row_list.append(row.find('td').find_next('td').
+                                    find_next('td').text.strip())
                     # Append date to datePosted
                     row_list.append(row.find('td').find_next('td').
                                     find_next('td').find_next('td').
