@@ -1,3 +1,4 @@
+import datetime
 import requests
 from bs4 import BeautifulSoup
 
@@ -6,6 +7,26 @@ class Scraper:
     def __init__(self):
         self.sites = ['https://github.com/SimplifyJobs/Summer2025-Internships',
                       'https://github.com/cvrve/Summer2025-Internships']
+
+    def add_year(self, data):
+        # append the correct year to each application listing date
+        curr_time = datetime.datetime.now()
+        curr_year = curr_time.year
+        curr_month = curr_time.strftime("%B")[:3]
+        is_dec = curr_month == "Dec"
+        print(curr_year, curr_month, is_dec)
+        for item in data:
+            if not is_dec:
+                if item[4][:3] == "Dec":
+                    curr_year -= 1
+                    is_dec = True
+                item[4] = item[4] + " " + str(curr_year)
+            else:
+                if item[4][:3] == "Nov":
+                    is_dec = False
+                item[4] = item[4] + " " + str(curr_year)
+
+        return data
 
     def seed_applications(self):
         data_list = []
@@ -55,8 +76,10 @@ class Scraper:
                                     find_next('td').text.strip())
                     # Append application links
                     data.append(row_list)
+
             if item == self.sites[0]:
-                data_list.extend(data[8:])
+                data_with_year = self.add_year(data[8:])
+                data_list.extend(data_with_year)
             else:
                 data_list.extend(data[7:])
         return data_list
